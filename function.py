@@ -10,7 +10,6 @@ def parameters(toponym):
         size["lowerCorner"].split()[1])
     up = round(upperl - downl, 3)
     flat = round(upperla - downla, 3)
-    # Собираем параметры для запроса к StaticMapsAPI:
     map_params = {
         "ll": ",".join([toponym_longitude, toponym_lattitude]),
         "spn": ",".join([str(flat), str(up)]),
