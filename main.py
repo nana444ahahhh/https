@@ -1,9 +1,13 @@
 import sys
 from io import BytesIO
+# Этот класс поможет нам сделать картинку из потока байт
 from function import parameters
 import requests
 from PIL import Image
 
+# Пусть наше приложение предполагает запуск:
+# python search.py Москва, ул. Ак. Королева, 12
+# Тогда запрос к геокодеру формируется следующим образом:
 toponym_to_find = " ".join(sys.argv[1:])
 
 geocoder_api_server = "http://geocode-maps.yandex.ru/1.x/"
@@ -15,10 +19,16 @@ geocoder_params = {
 
 response = requests.get(geocoder_api_server, params=geocoder_params)
 
+if not response:
+    # обработка ошибочной ситуации
+    pass
+
+# Преобразуем ответ в json-объект
 json_response = response.json()
-location = json_response["response"]["GeoObjectCollection"][
+# Получаем первый топоним из ответа геокодера.
+toponym = json_response["response"]["GeoObjectCollection"][
     "featureMember"][0]["GeoObject"]
-info = parameters(location)
+info = parameters(toponym)
 map_api_server = "http://static-maps.yandex.ru/1.x/"
 response = requests.get(map_api_server, params=info)
 Image.open(BytesIO(
